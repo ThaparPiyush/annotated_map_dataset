@@ -269,7 +269,7 @@ class DataGenerator:
         #             color = (255, 255, 255)
         #             cv2.line(cnt_map ,(int(x), int(y1)), (int(x), int(y2)), color, 1)
         # redraw the layout
-        cv2.drawContours(cnt_map, [verts], 0, 0, 5)
+        cv2.drawContours(cnt_map, [verts], 0, 0, 55)
 
 
 
@@ -455,7 +455,8 @@ class DataGenerator:
                                         [obs_x + (bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + bound_obs_b * cthe)],
                                         [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
                                     np.int32)
-                    cv2.polylines(cnt_map, [bound_rect], True, color, 2)
+                    #cv2.polylines(cnt_map, [bound_rect], True, color, 2)
+                    cv2.polylines(cnt_map, [bound_rect], True, color, thickness=25)
                     cv2.polylines(cnt_map, [rect], isClosed, color,thickness)
 
                     # color_img = cv2.polylines(color_img, [bound_rect], True, color, 2)
@@ -481,18 +482,19 @@ class DataGenerator:
                                             [obs_x + (bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + bound_obs_b * cthe)],
                                             [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
                                         np.int32)
-                        cv2.polylines(cnt_map, [bound_rect1], True, 0, 2)
-                        cv2.polylines(cnt_map, [rect1],isClosed, color,thickness)
+                        #cv2.polylines(cnt_map, [bound_rect1], True, 0, 2)
+                        cv2.polylines(cnt_map, [bound_rect1], True, 0, thickness=25)
+                        cv2.polylines(cnt_map, [rect1],isClosed, color,thickness=25)
 
                         # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
                         color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
 #                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
                     else:
-                        cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
+                        cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=25)
                         cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=8)
 
-                        cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=-1)
+                        cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=25)
                         # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
                         cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=8)
 #                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
