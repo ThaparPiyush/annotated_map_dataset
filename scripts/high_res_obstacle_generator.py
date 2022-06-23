@@ -15,16 +15,18 @@ import codecs
 import random
 from easydict import EasyDict as edict
 
+pwd = os.getcwd()
+
 config = {
 
 
     "map_info": {
 
-        "json_path": "/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/json",
-        "map_id_set_file": "/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/map_id_10.txt",
-        "save_path": "/home/rrc/annotated_map_dataset",
-        "dark_colors_file": "/home/rrc/annotated_map_dataset/textures/dark_colors.txt",
-        "light_colors_file": "/home/rrc/annotated_map_dataset/textures/light_colors.txt",
+        "json_path": os.path.join(pwd, "HouseExpo/HouseExpo/json"), #"/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/json",
+        "map_id_set_file": os.path.join(pwd, "HouseExpo/HouseExpo/map_id_10.txt"), #"/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/map_id_10.txt",
+        "save_path": pwd, #"/home/rrc/annotated_map_dataset",
+        "dark_colors_file": os.path.join(pwd, "textures/dark_colors.txt"), #"/home/rrc/annotated_map_dataset/textures/dark_colors.txt",
+        "light_colors_file": os.path.join(pwd, "textures/light_colors.txt") #"/home/rrc/annotated_map_dataset/textures/light_colors.txt",
     },
 
 
@@ -49,7 +51,6 @@ config = {
 
 
 }
-
 
 class DataGenerator:
 
@@ -364,7 +365,7 @@ class DataGenerator:
             # print(cX)
             room_annotate_number = room_annotate_number + 1
             annotate = 'Room_%d (%d, %d) '%(room_annotate_number, cX/100, cY/100)
-            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
+#            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
             self.annotation_list.append(('Room_%d' %(room_annotate_number), cX/100, cY/100))
         # Annotating Doors
         for i in range(len(door_center)):
@@ -373,7 +374,7 @@ class DataGenerator:
             # print(cX)
             door_annotate_number = door_annotate_number + 1
             annotate = 'Door_%d (%d, %d) '%(door_annotate_number, cX/100, cY/100)
-            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
+#            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
             self.annotation_list.append(('Door_%d' %(door_annotate_number), cX/100, cY/100))
  
         # Annotating Obstacles
@@ -425,10 +426,10 @@ class DataGenerator:
                 org = (obs_x, obs_y)
 
                 annotate_number = annotate_number + 1
-                annotate = 'Tabel_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
-                self.annotation_list.append(('Tabel_%d' %(annotate_number), obs_x/100, obs_y/100))
+                annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
+                self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
 
-                with open(r'/home/rrc/annotated_map_dataset/annotations/map_{}.txt'.format(number), 'w') as fp:
+                with open(r'annotations/map_{}.txt'.format(number), 'w') as fp:
                     for annotations in self.annotation_list:
                         fp.write('{0}\n' .format(annotations))
                     fp.close()
@@ -465,7 +466,7 @@ class DataGenerator:
                     # if cv2.waitKey(0) & 0xff == 27:
                     #     cv2.destroyAllWindows()
                     # image = cv2.addWeighted(image,0.3,cnt_map,0.7,0)
-                    text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+#                    text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
 
                 else:
                     if annotate_number%2 == 0:
@@ -486,7 +487,7 @@ class DataGenerator:
                         # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
                         color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
-                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
+#                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
                     else:
                         cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
                         cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=8)
@@ -494,7 +495,7 @@ class DataGenerator:
                         cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=-1)
                         # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
                         cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=8)
-                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+#                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
                 break
         
         images = [cnt_map, color_img]
