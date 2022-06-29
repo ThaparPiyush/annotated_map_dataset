@@ -140,5 +140,6 @@ map_yaml/*
 !map_contours_info/.gitkeep
 !map_yaml/.gitkeep
 
-path_planning/build
-path_planning/devel
+devel/
+build/
+.catkin_workspace
