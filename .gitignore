@@ -129,8 +129,8 @@ dmypy.json
 .pyre/
 
 # Map information
-map_image/
-color_map_image/
-annotations/
-path_planning/build
-path_planning/devel
+# map_image/
+# color_map_image/
+# annotations/
+# path_planning/build
+# path_planning/devel
