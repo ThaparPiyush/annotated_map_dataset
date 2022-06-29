@@ -15,18 +15,18 @@ import codecs
 import random
 from easydict import EasyDict as edict
 
-pwd = os.getcwd()
+cwd = os.getcwd()
 
 config = {
 
 
     "map_info": {
 
-        "json_path": os.path.join(pwd, "HouseExpo/HouseExpo/json"), #"/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/json",
-        "map_id_set_file": os.path.join(pwd, "HouseExpo/HouseExpo/map_id_10.txt"), #"/home/rrc/wheelchair/src/dependencies/HouseExpo/HouseExpo/map_id_10.txt",
-        "save_path": pwd, #"/home/rrc/annotated_map_dataset",
-        "dark_colors_file": os.path.join(pwd, "textures/dark_colors.txt"), #"/home/rrc/annotated_map_dataset/textures/dark_colors.txt",
-        "light_colors_file": os.path.join(pwd, "textures/light_colors.txt") #"/home/rrc/annotated_map_dataset/textures/light_colors.txt",
+        "json_path": os.path.join(cwd, "data/HouseExpo/HouseExpo/json"), 
+        "map_id_set_file": os.path.join(cwd, "data/HouseExpo/HouseExpo/map_id_10.txt"), 
+        "save_path": os.path.join(cwd, "data"),
+        "dark_colors_file": os.path.join(cwd, "data/textures/dark_colors.txt"), 
+        "light_colors_file": os.path.join(cwd, "data/textures/light_colors.txt") 
     },
 
 
@@ -429,7 +429,7 @@ class DataGenerator:
                 annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
                 self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
 
-                with open(r'annotations/map_{}.txt'.format(number), 'w') as fp:
+                with open(r'data/annotations/map_{}.txt'.format(number), 'w') as fp:
                     for annotations in self.annotation_list:
                         fp.write('{0}\n' .format(annotations))
                     fp.close()

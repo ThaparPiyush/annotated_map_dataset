@@ -8,11 +8,12 @@ import sentence_generator # Import sentence dataset with corresponding waypoints
 import shutil # For copying and pasting data between directories
 import cv2 # For some very cool CV stuff
 import random # Literally a random library, not kidding
-import os
-
-print(os.getcwd())
+import os # To get absolute paths for reading a writing the dataset
+import subprocess # To get location of package 'dlux_plugins'
+import high_res_obstacle_generator # Start initializing dataset
 
 rospy.init_node("mynode")
+
 class dataset:
     def __init__(self): # Random important function
 
@@ -30,18 +31,19 @@ class dataset:
         self.viz_marker_data.scale.x = self.viz_marker_data.scale.y = self.viz_marker_data.scale.z = 2
         
         # Loading data and doing some stuff
-        self.sentences = {} # sentences = sentences.sentences(nDoors, nRooms, nTables)
-        self.map_info = r'/home/kanishk/ros_ws/annotated_map_dataset/annotations/map_' # Filling it in function 'copy_map_info' below. Example: map_3.txt
-        self.map_source = r'/home/kanishk/ros_ws/annotated_map_dataset/map_image/map_' # Filling it in function 'copy_map_png' below. Example: map_3.png
-        self.map_target = r'/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/map.png'
-        self.map_info_source = r'/home/kanishk/ros_ws/annotated_map_dataset/annotations/map_'
-        self.map_color_source = r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_color.png
-        self.map_color_target = r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_17.png, for sentence 17 in map 3.
+        self.sentences = {} 
+        self.cwd = os.getcwd()
+        self.map_source = os.path.join(self.cwd, 'data/map_image/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/map_image/map_' # Filling it in function 'copy_map_png' below. Example: map_3.png
+        self.paths = subprocess.run(['rospack', 'find', 'dlux_plugins'], stdout=subprocess.PIPE)
+        self.paths = self.paths.stdout.decode('utf-8')[0:-1]
+        self.map_target = self.paths + '/test/map.png' #r'/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/map.png'
+        self.map_info_source = os.path.join(self.cwd, 'data/annotations/map_') # self.map_info #os.path.join(self.cwd, 'data/annotations/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/annotations/map_'
+        self.map_color_source = os.path.join(self.cwd, 'data/color_map_image/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_color.png
+        self.map_color_target = self.map_color_source #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_17.png, for sentence 17 in map 3.
 
         # Launch file setup before starting
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(self.uuid)
-        self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, ["/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/node_test.launch"])
 
         # Start doing something
         self.do_stuff()
@@ -126,6 +128,7 @@ class dataset:
             sentencesObject = sentence_generator.sentences(locations)
             sentences = sentencesObject.returnSentences()
             map_image = cv2.imread(self.map_target)
+            self.launch = roslaunch.parent.ROSLaunchParent(self.uuid, [self.paths + '/test/node_test.launch']) #["/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/node_test.launch"])
             self.launch.start() # Started navigation launch file
             
             for sentence_index, (sentence, waypoints) in enumerate(sentences.items()): # Do the following with every sentence
@@ -183,10 +186,10 @@ class dataset:
                     if len(self.viz_marker_data.points) != 0:
                         color_map_out = self.map_color_source + str(map_num) + '_' + str(sentence_index) + '_color.png'
                         cv2.imwrite(color_map_out, color_map_in)
-                        map_info_target = self.map_info_source + str(map_num) + '_' + str(sentence_index) + '.txt'
+                        map_info_target = self.map_info_source[0:-5] + str(map_num) + '_' + str(sentence_index) + '.txt'
                         map_info_file = open(map_info_target, 'a')
-                        map_info_file.write('===\n' + str(map_info_target) + '\n' + str(sentence) + ' -> ' + str(waypoints) + '\n' + str(points_out_list) + 'n')
-                    
+                        map_info_file.write('===\n' + '\n' + str(sentence) + ' -> ' + str(waypoints) + '\n' + str(points_out_list) + 'n')
+            self.launch.shutdown()        
 dataset = dataset()
 rospy.spin()
 rospy.loginfo("\nNode exited\n")
