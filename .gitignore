@@ -132,3 +132,5 @@ dmypy.json
 map_image/
 color_map_image/
 annotations/
+path_planning/build
+path_planning/devel

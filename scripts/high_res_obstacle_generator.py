@@ -139,7 +139,7 @@ class DataGenerator:
 
         verts[:, 0] = verts[:, 0] - x_min + self.config.world_params.border_pad
         verts[:, 1] = verts[:, 1] - y_min + self.config.world_params.border_pad
-        cv2.drawContours(cnt_map, [verts], 0, 0, 60)
+        cv2.drawContours(cnt_map, [verts], 0, 0, 5)
 
         noise_removal_threshold=25
         corners_threshold=0.05
@@ -269,7 +269,7 @@ class DataGenerator:
         #             color = (255, 255, 255)
         #             cv2.line(cnt_map ,(int(x), int(y1)), (int(x), int(y2)), color, 1)
         # redraw the layout
-        cv2.drawContours(cnt_map, [verts], 0, 0, 60)
+        cv2.drawContours(cnt_map, [verts], 0, 0, 70)
 
 
 
@@ -289,7 +289,7 @@ class DataGenerator:
                     color = (255, 255, 255)
                     cv2.line(color_img ,(int(x), int(y1)), (int(x), int(y2)), color, 1)
         # redraw the layout
-        cv2.drawContours(color_img, [verts], 0, 0, 60)
+        cv2.drawContours(color_img, [verts], 0, 0, 5)
 
 
         # Copy to global vars
@@ -365,7 +365,7 @@ class DataGenerator:
             # print(cX)
             room_annotate_number = room_annotate_number + 1
             annotate = 'Room_%d (%d, %d) '%(room_annotate_number, cX/100, cY/100)
-#            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
+            #text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
             self.annotation_list.append(('Room_%d' %(room_annotate_number), cX/100, cY/100))
         # Annotating Doors
         for i in range(len(door_center)):
@@ -374,7 +374,7 @@ class DataGenerator:
             # print(cX)
             door_annotate_number = door_annotate_number + 1
             annotate = 'Door_%d (%d, %d) '%(door_annotate_number, cX/100, cY/100)
-#            text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
+            #text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
             self.annotation_list.append(('Door_%d' %(door_annotate_number), cX/100, cY/100))
  
         # Annotating Obstacles
@@ -468,7 +468,7 @@ class DataGenerator:
                     # if cv2.waitKey(0) & 0xff == 27:
                     #     cv2.destroyAllWindows()
                     # image = cv2.addWeighted(image,0.3,cnt_map,0.7,0)
-#                    text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+                    #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
 
                 else:
                     if annotate_number%2 == 0:
@@ -491,7 +491,7 @@ class DataGenerator:
                         # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
                         color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
-#                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
+                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
                     else:
                         cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
                         cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=8)
@@ -499,7 +499,7 @@ class DataGenerator:
                         cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=25)
                         # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
                         cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=8)
-#                        text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
                 break
         
         images = [cnt_map, color_img]
