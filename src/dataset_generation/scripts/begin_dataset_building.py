@@ -36,7 +36,7 @@ class dataset:
         self.map_source = os.path.join(self.cwd, 'data/map_image/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/map_image/map_' # Filling it in function 'copy_map_png' below. Example: map_3.png
         # self.paths = subprocess.run(['rospack', 'find', 'dlux_plugins'], stdout=subprocess.PIPE)
         # self.paths = self.paths.stdout.decode('utf-8')[0:-1]
-        self.global_plan_paths = 'src/dependencies/dlux_plugins'
+        self.global_plan_paths = '/home/rrc/annotated_map_dataset/src/dependencies/dlux_plugins'
         self.map_target = self.global_plan_paths + '/test/map.png' #r'/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/map.png'
         self.map_info_source = os.path.join(self.cwd, 'data/annotations/map_') # self.map_info #os.path.join(self.cwd, 'data/annotations/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/annotations/map_'
         self.map_color_source = os.path.join(self.cwd, 'data/color_map_image/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_color.png

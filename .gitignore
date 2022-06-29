@@ -129,16 +129,16 @@ dmypy.json
 .pyre/
 
 # Map information
-map_image/*
-color_map_image/*
-annotations/*
-map_contours_info/*
-map_yaml/*
-!map_image/.gitkeep
-!color_map_image/.gitkeep
-!annotations/.gitkeep
-!map_contours_info/.gitkeep
-!map_yaml/.gitkeep
+src/dataset_generation/data/map_image/*
+src/dataset_generation/data/color_map_image/*
+src/dataset_generation/data/annotations/*
+src/dataset_generation/data/map_contours_info/*
+src/dataset_generation/data/map_yaml/*
+!src/dataset_generation/data/map_image/.gitkeep
+!src/dataset_generation/data/color_map_image/.gitkeep
+!src/dataset_generation/data/annotations/.gitkeep
+!src/dataset_generation/data/map_contours_info/.gitkeep
+!src/dataset_generation/data/map_yaml/.gitkeep
 
 devel/
 build/
