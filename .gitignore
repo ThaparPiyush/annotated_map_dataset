@@ -134,11 +134,15 @@ src/dataset_generation/data/color_map_image/*
 src/dataset_generation/data/annotations/*
 src/dataset_generation/data/map_contours_info/*
 src/dataset_generation/data/map_yaml/*
+src/dataset_generation/data/map_seg_mask/*
+src/dataset_generation/data/waypoints/*
 !src/dataset_generation/data/map_image/.gitkeep
 !src/dataset_generation/data/color_map_image/.gitkeep
 !src/dataset_generation/data/annotations/.gitkeep
 !src/dataset_generation/data/map_contours_info/.gitkeep
 !src/dataset_generation/data/map_yaml/.gitkeep
+!src/dataset_generation/data/map_seg_mask/.gitkeep
+!src/dataset_generation/data/waypoints/.gitkeep
 
 devel/
 build/

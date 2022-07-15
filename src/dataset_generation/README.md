@@ -1,8 +1,8 @@
 # Vision and Language Navigation | IIIT Hyderabad
 
 Steps: 
-1. Run `chmod +x clean.sh` and `./clean.sh` whenever you want to clean the dataset and start afresh.
-2. Run `roscore`
-3. python3 `begin_dataset_building.py` to start building the dataset.
+1. Run `chmod +x clean.sh` and `./clean.sh`.
+2. Run `python3 high_res_obstacle_generator.py`.
+2. Run `python3 seg_mask.py` to start building the dataset.
 
-To stop the python file, use the `ps -a` to get the PID of python file and shut it down using `kill -9 PID` where PID is the process identity.
+Dataset is generated inside the `data/color_map_image`, `data/map_seg_mask` and `data/waypoints` folders.
