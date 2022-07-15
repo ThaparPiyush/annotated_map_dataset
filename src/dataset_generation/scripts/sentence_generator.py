@@ -7,7 +7,7 @@ Connectives = [' then ', ' after that ']
 
 Sentences = {}
 
-## Check no of places in map
+## Check no of Places in map
 #   nRooms = nTables = nDoors = 0
 #   for loc in locations_parsed:
 #       if (sen[0][0:-2] == 'Room'):
@@ -19,7 +19,7 @@ Sentences = {}
 class sentences:
     def __init__(self, locations):
         self.Sentences = {}
-        self.places = []
+        self.Places = []
         self.nDoors = self.nRooms = self.nTables = 0
         for loc in locations:
             if (loc[0][0:-2] == 'Room'):
@@ -31,17 +31,25 @@ class sentences:
 
 
         for door in range (0, self.nDoors):
-            self.places.append('Door_' + str(door+1))
+            self.Places.append('Door_' + str(door+1))
         for room in range(0, self.nRooms):
-            self.places.append('Room_' + str(room+1))
+            self.Places.append('Room_' + str(room+1))
         for table in range(0, self.nTables):
-            self.places.append('Table_' + str(table+1))
+            self.Places.append('Table_' + str(table+1))
 
         for imperative in Imperatives:
-            for place in self.places:
-                sentence = imperative + place
-                waypoints = ((place),)
-                self.Sentences[sentence] = waypoints
+            for connective in Connectives:
+                for place1 in range(0, len(self.Places)-1):
+                    remaining_places = self.Places[:place1] + self.Places[(place1+1):]
+                    for place2 in range(0, len(remaining_places)-1):
+                        sentence = imperative + self.Places[place1] + connective + remaining_places[place2]
+                        waypoints = (self.Places[place1], remaining_places[place2])
+                        self.Sentences[sentence] = waypoints
+#        for imperative in Imperatives:
+#            for place in self.Places:
+#                sentence = imperative + place
+#                waypoints = ((place),)
+#                self.Sentences[sentence] = waypoints
     def returnSentences(self):
         return self.Sentences
 
