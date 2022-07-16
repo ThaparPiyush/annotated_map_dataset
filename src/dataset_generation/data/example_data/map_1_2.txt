@@ -1,0 +1,3 @@
+
+ go to Door_1 then  go to Door_4
+('Door_1', 'Door_4')
