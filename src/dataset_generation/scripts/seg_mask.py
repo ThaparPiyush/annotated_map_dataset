@@ -99,7 +99,6 @@ class dataset:
 
                 for waypoint_index in range(0, len(waypoints)):
                     print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index)
-                    
                     if waypoint_index == 0:
                         (start_img_x, start_img_y) = self.returnStartPoint(map_image)
                         for location in locations_parsed:
