@@ -147,3 +147,4 @@ src/dataset_generation/data/waypoints/*
 devel/
 build/
 .catkin_workspace
+/scratch/kanishk/annotated_map_dataset/dataset_generation/data/HouseExpo/HouseExpo
