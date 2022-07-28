@@ -14,6 +14,7 @@ import subprocess
 import codecs
 import random
 from easydict import EasyDict as edict
+# from goto import goto, label
 
 cwd = os.getcwd()
 
@@ -23,7 +24,7 @@ config = {
     "map_info": {
 
         "json_path": os.path.join(cwd, "data/HouseExpo/HouseExpo/json"), 
-        "map_id_set_file": os.path.join(cwd, "data/HouseExpo/HouseExpo/map_id_10.txt"), 
+        "map_id_set_file": os.path.join(cwd, "data/HouseExpo/HouseExpo/map_ids.txt"), 
         "save_path": os.path.join(cwd, "data"),
         "dark_colors_file": os.path.join(cwd, "data/textures/dark_colors.txt"), 
         "light_colors_file": os.path.join(cwd, "data/textures/light_colors.txt") 
@@ -196,6 +197,7 @@ class DataGenerator:
         unique = np.unique(labels)
         rooms = []
         doors = []
+        door_stats = []
         room_center = []
         door_center = []
         color_enumerator = 0
@@ -218,6 +220,7 @@ class DataGenerator:
                 elif area < 300:
                     # print('DOOR_AREA:',area)
                     doors.append(component)
+                    door_stats.append(stats[label])
                     door_center.append(centroids[label])
                     (cX, cY) = centroids[label]
                     orgC = (int(cX), int(cY))
@@ -229,7 +232,9 @@ class DataGenerator:
                 # print(color_enumerator)
                 # color = np.random.randint(0, 255, size=3)
             color_img[component] = color
-        # print('LENGTH1: ' ,len(door_center))
+        # print('LENGTH1: ' ,door_stats)
+        # print(door_center)
+        # print('LENGTH2: ' ,len(door_center))
         for center1 in door_center:
             i = 0
             for center2 in door_center:
@@ -240,34 +245,36 @@ class DataGenerator:
                     if distance < 100:
                         # print(center2)
                         door_center.pop(i)
+                        # door_stats.pop(i)
                 i = i+1
-        # print(door_center)
+        # print('LENGTH1: ' ,door_stats[0])
+        # # print(door_center)
         # print('LENGTH2: ' ,len(door_center))
         # cv2.imshow('dst',img)
         # if cv2.waitKey(0) & 0xff == 27:
         #     cv2.destroyAllWindows()
 
         # Add Random Obstacles
-        images = self.add_obstacles(number, corners, room_closing_max_length, room_center, door_center, verts, color_img, cnt_map)
+        images = self.add_obstacles(number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, cnt_map)
         cnt_map = images[0]
         color_img = images[1]
         # cnt_map = cv2.cvtColor(cnt_map.astype(np.uint8),cv2.COLOR_GRAY2RGB)
 
-        # #Remoiving Doors
-        # for y,row in enumerate(corners):
-        #     x_same_y = np.argwhere(row)
-        #     for x1, x2 in zip(x_same_y[:-1], x_same_y[1:]):
+        #Remoiving Doors
+        for y,row in enumerate(corners):
+            x_same_y = np.argwhere(row)
+            for x1, x2 in zip(x_same_y[:-1], x_same_y[1:]):
 
-        #         if x2[0] - x1[0] < room_closing_max_length:
-        #             color = (255, 255, 255)
-        #             cv2.line(cnt_map , (int(x1), int(y)), (int(x2), int(y)), color, 1)
+                if x2[0] - x1[0] < room_closing_max_length:
+                    color = (255, 255, 255)
+                    cv2.line(cnt_map , (int(x1), int(y)), (int(x2), int(y)), color, 1)
 
-        # for x,col in enumerate(corners.T):
-        #     y_same_x = np.argwhere(col)
-        #     for y1, y2 in zip(y_same_x[:-1], y_same_x[1:]):
-        #         if y2[0] - y1[0] < room_closing_max_length:
-        #             color = (255, 255, 255)
-        #             cv2.line(cnt_map ,(int(x), int(y1)), (int(x), int(y2)), color, 1)
+        for x,col in enumerate(corners.T):
+            y_same_x = np.argwhere(col)
+            for y1, y2 in zip(y_same_x[:-1], y_same_x[1:]):
+                if y2[0] - y1[0] < room_closing_max_length:
+                    color = (255, 255, 255)
+                    cv2.line(cnt_map ,(int(x), int(y1)), (int(x), int(y2)), color, 1)
         # redraw the layout
         cv2.drawContours(cnt_map, [verts], 0, 0, 70)
 
@@ -312,7 +319,7 @@ class DataGenerator:
 
 
         
-    def add_obstacles(self, number, corners, room_closing_max_length, room_center, door_center, verts, color_img, cnt_map:np.array) -> np.array:
+    def add_obstacles(self, number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, cnt_map:np.array) -> np.array:
 
 
         obs_num_min = self.config.world_params.obs_num_min
@@ -376,8 +383,9 @@ class DataGenerator:
             annotate = 'Door_%d (%d, %d) '%(door_annotate_number, cX/100, cY/100)
             #text = cv2.putText(cnt_map, annotate, orgC, font,fontScale, room_color, text_thickness, cv2.LINE_AA)
             self.annotation_list.append(('Door_%d' %(door_annotate_number), cX/100, cY/100))
- 
+
         # Annotating Obstacles
+        break_out_flag = False
         for i in range(obs_num):
             while (1):
                 # randomly generate obstacle orientation & obstacle size that fall within obstacle_sizeRange
@@ -422,6 +430,35 @@ class DataGenerator:
                 # check if point is in the map
                 result = cv2.pointPolygonTest(verts, (obs_x, obs_y), False) 
                 if result != 1:
+                    break
+                output = cnt_map.copy()
+                for stats in range(len(door_stats)):
+                    x_door = int(door_stats[stats][0]) - 50
+                    y_door = int(door_stats[stats][1]) - 50 
+                    w_door = int(door_stats[stats][2]) + 100
+                    h_door = int(door_stats[stats][3]) + 100
+                    # print("x: ", x_door)
+                    # print("y: ", y_door)
+                    # print("w: ", w_door)
+                    # print("h: ", h_door)
+
+                    door = np.array([[x_door, y_door],
+                                    [(x_door + w_door), y_door],
+                                    [(x_door + w_door), (y_door + h_door)],
+                                    [x_door, (y_door + h_door)]],
+                                    np.int32)
+                    # color_img = cv2.polylines(color_img, [door], True, (255,0,0),2)
+                    # im = cv2.rectangle(output, (x_door, y_door), (x_door + w_door, y_door + h_door), (0, 255, 0), 1)
+                    # im = (np.array(im)).astype(int)
+                    result_2 = cv2.pointPolygonTest(door, (obs_x, obs_y), False) 
+                    # cv2.imshow('dst',color_img)
+                    # if cv2.waitKey(0) & 0xff == 27:
+                    #     cv2.destroyAllWindows()
+                    # print('resut: ', result_2)
+                    if result_2 >= 0:
+                        break_out_flag = True
+
+                if break_out_flag:
                     break
                 org = (obs_x, obs_y)
 

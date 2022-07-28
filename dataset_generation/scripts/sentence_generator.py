@@ -26,12 +26,12 @@ class sentences:
                 self.nRooms +=1
             elif (loc[0][0:-2] == 'Table'):
                 self.nTables += 1
-            elif (loc[0][0:-2] == 'Door'):
-                self.nDoors += 1
+            # elif (loc[0][0:-2] == 'Door'):
+            #     self.nDoors += 1
 
 
-        for door in range (0, self.nDoors):
-            self.Places.append('Door_' + str(door+1))
+        # for door in range (0, self.nDoors):
+        #     self.Places.append('Door_' + str(door+1))
         for room in range(0, self.nRooms):
             self.Places.append('Room_' + str(room+1))
         for table in range(0, self.nTables):
