@@ -16,7 +16,13 @@ import random
 from easydict import EasyDict as edict
 # from goto import goto, label
 
+from inspect import getsourcefile
+from os.path import abspath
+
 cwd = os.getcwd()
+cwd = abspath(getsourcefile(lambda:0))
+cwd = cwd[0:-39]
+print(cwd)
 
 config = {
 
@@ -117,7 +123,7 @@ class DataGenerator:
         for map_id in self.map_ids:
             self.draw_map(map_id, number)
             number = number+1
-            # break
+            
             
         # while True:
         #     pass
@@ -466,7 +472,7 @@ class DataGenerator:
                 annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
                 self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
 
-                with open(r'data/annotations/map_{}.txt'.format(number), 'w') as fp:
+                with open(r'/home/rrc/annotated_map_dataset/src/dataset_generation/data/annotations/map_{}.txt'.format(number), 'w') as fp:
                     for annotations in self.annotation_list:
                         fp.write('{0}\n' .format(annotations))
                     fp.close()

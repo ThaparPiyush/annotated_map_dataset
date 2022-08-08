@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>annotated_map_dataset</name>
+  <name>dataset_generation</name>
   <version>0.0.0</version>
   <description>This package is used to create dataset for VLN research at Robotics Research Center, IIIT Hyderabad</description>
   <maintainer email="thaparpiyush123@gmail.com">Piyush Thapar</maintainer>
