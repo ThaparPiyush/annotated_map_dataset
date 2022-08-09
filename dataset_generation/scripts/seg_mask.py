@@ -86,7 +86,7 @@ class dataset:
         return (x, y)
 
     def do_stuff(self):
-        for map_num in range (1,11): # Do the following with every map
+        for map_num in range (1,51): # Do the following with every map
             locations_parsed = self.copy_map_info(map_num)
             sentencesObject = sentence_generator.sentences(locations_parsed)
             self.sentences = sentencesObject.returnSentences()
