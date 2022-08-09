@@ -128,9 +128,6 @@ class dataset:
                 info_target = open(info_target, 'a')
                 info_target.write('\n' + str(sentence) + '\n' + str(waypoints) + '\n')
                 info_target.close()
-                del(info_target)
-            del(map_image)
-            del(map_seg_mask)
 
 dataset = dataset()
 print("\n")
