@@ -86,7 +86,7 @@ class dataset:
         return (x, y)
 
     def do_stuff(self):
-        for map_num in range (1,11): # Do the following with every map
+        for map_num in range (1,51): # Do the following with every map
             locations_parsed = self.copy_map_info(map_num)
             sentencesObject = sentence_generator.sentences(locations_parsed)
             self.sentences = sentencesObject.returnSentences()
@@ -128,9 +128,6 @@ class dataset:
                 info_target = open(info_target, 'a')
                 info_target.write('\n' + str(sentence) + '\n' + str(waypoints) + '\n')
                 info_target.close()
-                del(info_target)
-            del(map_image)
-            del(map_seg_mask)
 
 dataset = dataset()
 print("\n")
