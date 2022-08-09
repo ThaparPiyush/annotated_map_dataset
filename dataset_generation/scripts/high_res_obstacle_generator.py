@@ -471,7 +471,7 @@ class DataGenerator:
                 # annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
                 # self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
 
-                with open(r'/home/kanishk/ros_ws/annotated_map_dataset/src/dataset_generation/data/annotations/map_{}.txt'.format(number), 'w') as fp:
+                with open(os.path.join(cwd, 'data/annotations/map_{}.txt').format(number), 'w') as fp:
                     for annotations in self.annotation_list:
                         fp.write('{0}\n' .format(annotations))
                     fp.close()
