@@ -9,6 +9,8 @@ import os # To get absolute paths for reading a writing the dataset
 from os.path import abspath # To get absolute file path
 from inspect import getsourcefile # To get absolute file path
 import subprocess # To get location of package 'dlux_plugins'
+from ast import literal_eval
+import math
 # import high_res_obstacle_generator # Start initializing dataset
 
 class dataset:
@@ -32,12 +34,10 @@ class dataset:
             self.map_info_source = self.map_info_source[0:-5]
         self.map_info_source = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
         file = open(self.map_info_source, "r")
-        locations_unparsed = [] # Raw data taken from file in String format
+        file.seek(0)
+        locations_parsed = []
         for line in file:
-            locations_unparsed.append(line)
-        locations_parsed = [] # Made a list of places out of raw string
-        for line in locations_unparsed:
-            locations_parsed.append([line.split(' ')[0].split('\'')[1], float(line.split(',')[1]),float(line.split(',')[2].split(')')[0])]) # Regex
+            locations_parsed.append(list(literal_eval(line)))
         return locations_parsed
 
     def returnStartPoint(self, array): # Returns a random point (x,y) lying inside the given map
@@ -98,28 +98,30 @@ class dataset:
                 #map_seg_mask = map_image
 
                 for waypoint_index in range(0, len(waypoints)):
-                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index)
+                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
                     if waypoint_index == 0:
                         (start_img_x, start_img_y) = self.returnStartPoint(map_image)
                         for location in locations_parsed:
                             if location[0] == waypoints[waypoint_index]:
                                 goal_img_x = int(location[2]*100)
                                 goal_img_y = int(location[1]*100)
-                                (goal_img_x, goal_img_y) = self.returnSafePoint((goal_img_x, goal_img_y), map_image)
+                                #(goal_img_x, goal_img_y) = self.returnSafePoint((goal_img_x, goal_img_y), map_image)
                     else:
                         for location in locations_parsed:
                             if location[0] == waypoints[waypoint_index-1]:
                                 start_img_x = int(location[2]*100)
                                 start_img_y = int(location[1]*100)
-                                (start_img_x, start_img_y) = self.returnSafePoint((start_img_x, start_img_y), map_image)
+                                #(start_img_x, start_img_y) = self.returnSafePoint((start_img_x, start_img_y), map_image)
                         for location in locations_parsed:
                             if location[0] == waypoints[waypoint_index]:
                                 goal_img_x = int(location[2]*100)
                                 goal_img_y = int(location[1]*100)
-                                (goal_img_x, goal_img_y) = self.returnSafePoint((goal_img_x, goal_img_y), map_image)
+                                #(goal_img_x, goal_img_y) = self.returnSafePoint((goal_img_x, goal_img_y), map_image)
                     
-                    map_seg_mask = cv2.circle(map_seg_mask, (start_img_y, start_img_x), 20, (255, 255, 255), -1)
-                    map_seg_mask = cv2.circle(map_seg_mask, (goal_img_y, goal_img_x), 20, (255, 255, 255), -1)
+                    #map_seg_mask = cv2.circle(map_seg_mask, (start_img_y, start_img_x), 20, (255, 255, 255), -1)
+                    for location in locations_parsed:
+                        if location[0] == waypoints[waypoint_index]:
+                            map_seg_mask = cv2.circle(map_seg_mask, (goal_img_y, goal_img_x), math.ceil(location[-1]), (255, 255, 255), -1)
 
                 cv2.imwrite((self.map_seg_target + str(map_num) + '_' + str(sentence_index) + '.png'), map_seg_mask)
                 info_target = self.sentences_target + str(map_num) + "_" + str(sentence_index) + ".txt"
@@ -131,3 +133,4 @@ class dataset:
             del(map_seg_mask)
 
 dataset = dataset()
+print("\n")
