@@ -123,7 +123,7 @@ class DataGenerator:
         for map_id in self.map_ids:
             self.draw_map(map_id, number)
             number = number+1
-            break
+            
             
         # while True:
         #     pass
@@ -499,8 +499,8 @@ class DataGenerator:
                                         [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
                                     np.int32)
 
-                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, [bound_rect]))
-                    # print([bound_rect])
+                    mask_radius = np.sqrt(np.sum(np.square(bound_rect[0]-bound_rect[2])))/2
+                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))
                     #cv2.polylines(cnt_map, [bound_rect], True, color, 2)
                     cv2.polylines(cnt_map, [bound_rect], True, color, thickness=1)
                     cv2.fillPoly(cnt_map, [bound_rect], (0, 0, 0))
@@ -538,7 +538,8 @@ class DataGenerator:
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
                         color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
                         #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
-                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_rect1))            
+                        mask_radius = np.sqrt(np.sum(np.square(bound_rect1[0]-bound_rect1[2])))/2
+                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))            
                     else:
                         cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
                         cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
@@ -553,7 +554,6 @@ class DataGenerator:
         images = [cnt_map, color_img]
         self.annotation_list.clear()
         return images
-
 
 config = edict(config)
 data_generator = DataGenerator(config)
