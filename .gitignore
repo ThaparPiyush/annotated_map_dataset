@@ -146,7 +146,9 @@ src/dataset_generation/data/plan_waypoints/*
 !src/dataset_generation/data/map_seg_mask/.gitkeep
 !src/dataset_generation/data/waypoints/.gitkeep
 
+logs/
 devel/
 build/
 .catkin_workspace
+.catkin_tools/
 /scratch/kanishk/annotated_map_dataset/dataset_generation/data/HouseExpo/HouseExpo
