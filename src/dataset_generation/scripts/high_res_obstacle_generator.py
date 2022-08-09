@@ -123,7 +123,7 @@ class DataGenerator:
         for map_id in self.map_ids:
             self.draw_map(map_id, number)
             number = number+1
-            
+            break
             
         # while True:
         #     pass
@@ -469,8 +469,8 @@ class DataGenerator:
                 org = (obs_x, obs_y)
 
                 annotate_number = annotate_number + 1
-                annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
-                self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
+                # annotate = 'Table_%d (%d, %d) '%(annotate_number, obs_x/100, obs_y/100)
+                # self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100))
 
                 with open(r'/home/rrc/annotated_map_dataset/src/dataset_generation/data/annotations/map_{}.txt'.format(number), 'w') as fp:
                     for annotations in self.annotation_list:
@@ -498,6 +498,9 @@ class DataGenerator:
                                         [obs_x + (bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + bound_obs_b * cthe)],
                                         [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
                                     np.int32)
+
+                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, [bound_rect]))
+                    # print([bound_rect])
                     #cv2.polylines(cnt_map, [bound_rect], True, color, 2)
                     cv2.polylines(cnt_map, [bound_rect], True, color, thickness=1)
                     cv2.fillPoly(cnt_map, [bound_rect], (0, 0, 0))
@@ -534,15 +537,17 @@ class DataGenerator:
                         # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
                         color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
-                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)            
+                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_rect1))            
                     else:
                         cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
-                        cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=8)
+                        cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
 
                         cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=25)
                         # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
-                        cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=8)
+                        cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
                         #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_obs_a)) 
                 break
         
         images = [cnt_map, color_img]
