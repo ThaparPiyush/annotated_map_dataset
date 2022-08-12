@@ -1,3 +1,0 @@
-
- go to Table_3
-('Table_3',)

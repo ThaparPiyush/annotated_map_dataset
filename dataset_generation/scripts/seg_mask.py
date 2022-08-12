@@ -30,10 +30,11 @@ class dataset:
         self.do_stuff()
 
     def copy_map_info(self, num): # Get locations with their Y, X coordinates
-        if(self.map_info_source[-1] == 't'):
-            self.map_info_source = self.map_info_source[0:-5]
-        self.map_info_source = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
-        file = open(self.map_info_source, "r")
+        #if(self.map_info_source[-1] == 't'):
+        #    self.map_info_source = self.map_info_source.split('')[0]
+        #    #self.map_info_source = self.map_info_source[0:-5]
+        f_open = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
+        file = open(f_open, "r")
         file.seek(0)
         locations_parsed = []
         for line in file:
