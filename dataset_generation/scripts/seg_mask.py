@@ -127,7 +127,9 @@ class dataset:
                 cv2.imwrite((self.map_seg_target + str(map_num) + '_' + str(sentence_index) + '.png'), map_seg_mask)
                 info_target = self.sentences_target + str(map_num) + "_" + str(sentence_index) + ".txt"
                 info_target = open(info_target, 'a')
-                info_target.write('\n' + str(sentence) + '\n' + str(waypoints) + '\n')
+                print(sentence)
+                sentence = str(sentence.split('_')[0]) + ' ' + str(sentence.split('_')[1])
+                info_target.write(str(sentence))
                 info_target.close()
 
 dataset = dataset()
