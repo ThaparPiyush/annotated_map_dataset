@@ -24,6 +24,9 @@ cwd = abspath(getsourcefile(lambda:0))
 cwd = cwd[0:-39]
 print(cwd)
 
+pattern_size = 30
+pattern_pad = 1
+
 config = {
 
 
@@ -123,7 +126,7 @@ class DataGenerator:
         for map_id in self.map_ids:
             self.draw_map(map_id, number)
             number = number+1
-            
+            # break
             
         # while True:
         #     pass
@@ -199,6 +202,7 @@ class DataGenerator:
         (ret, labels, stats, centroids) = output
         # print(centroids)
         color_img = cv2.cvtColor(cnt_map.astype(np.uint8),cv2.COLOR_GRAY2RGB)
+        color_img_1 = cv2.cvtColor(cnt_map.astype(np.uint8),cv2.COLOR_GRAY2RGB)
         unique = np.unique(labels)
         rooms = []
         doors = []
@@ -206,6 +210,8 @@ class DataGenerator:
         room_center = []
         door_center = []
         color_enumerator = 0
+
+        (h, w, _) = color_img.shape
 
         for label in unique:
             component = labels == label
@@ -236,7 +242,21 @@ class DataGenerator:
                     color =255
                 # print(color_enumerator)
                 # color = np.random.randint(0, 255, size=3)
-            color_img[component] = color
+            # color_img[component] = color
+
+            rooms_texture_path = "/home/rrc/annotated_map_dataset/src/dataset_generation/data/textures/rooms/room_texture_{}.jpg".format(color_enumerator+1)
+            dim = (pattern_size,pattern_size)
+            texture_img2 = cv2.imread(rooms_texture_path)
+            resized = cv2.resize(texture_img2, dim, interpolation = cv2.INTER_AREA)
+
+            pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
+            # pattern_[pattern_pad:pattern_size-pattern_pad, pattern_pad:pattern_size-pattern_pad, :] = resized
+            pattern_[:, :, :] = resized
+            ny = int(h / pattern_size) + 1
+            nx = int(w / pattern_size) + 1
+            pattern_ = cv2.repeat(pattern_, ny, nx)
+            pattern_ = pattern_[:h, :w, :]
+            color_img[component] = pattern_[component]
         # print('LENGTH1: ' ,door_stats)
         # print(door_center)
         # print('LENGTH2: ' ,len(door_center))
@@ -260,7 +280,7 @@ class DataGenerator:
         #     cv2.destroyAllWindows()
 
         # Add Random Obstacles
-        images = self.add_obstacles(number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, cnt_map)
+        images = self.add_obstacles(number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, color_img_1, cnt_map)
         cnt_map = images[0]
         color_img = images[1]
         # cnt_map = cv2.cvtColor(cnt_map.astype(np.uint8),cv2.COLOR_GRAY2RGB)
@@ -324,8 +344,7 @@ class DataGenerator:
 
 
         
-    def add_obstacles(self, number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, cnt_map:np.array) -> np.array:
-
+    def add_obstacles(self, number, corners, room_closing_max_length, room_center, door_stats, door_center, verts, color_img, color_img_1, cnt_map:np.array) -> np.array:
 
         obs_num_min = self.config.world_params.obs_num_min
         obs_num_max = self.config.world_params.obs_num_max
@@ -477,7 +496,10 @@ class DataGenerator:
                     fp.close()
                 # print(self.annotation_list)   
                 
-                # Green color in BGR
+                obstacle_texture_path = "/home/rrc/annotated_map_dataset/src/dataset_generation/data/textures/obstacle/texture_{}.jpg".format(i+1)
+                dim = (pattern_size,pattern_size)
+                texture_img = cv2.imread(obstacle_texture_path)
+                resized = cv2.resize(texture_img, dim, interpolation = cv2.INTER_AREA)
 
                 box_color =(self.dark_colors[i][1],self.dark_colors[i][2],self.dark_colors[i][3])
                 thickness = 8
@@ -499,7 +521,6 @@ class DataGenerator:
                                     np.int32)
 
                     mask_radius = np.sqrt(np.sum(np.square(bound_rect[0]-bound_rect[2])))/2
-                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))
                     #cv2.polylines(cnt_map, [bound_rect], True, color, 2)
                     cv2.polylines(cnt_map, [bound_rect], True, color, thickness=1)
                     cv2.fillPoly(cnt_map, [bound_rect], (0, 0, 0))
@@ -507,9 +528,10 @@ class DataGenerator:
 
                     # color_img = cv2.polylines(color_img, [bound_rect], True, color, 2)
                     color_img =cv2.fillPoly(color_img, [bound_rect], box_color)
-                    color_img = cv2.polylines(color_img, [rect], isClosed, color,thickness)
+                    color_img_1 = cv2.polylines(color_img_1, [rect], isClosed, color,thickness)
+                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))
                     # print(i)
-                    # cv2.imshow('dst',color_img)
+                    # cv2.imshow('dst',color_img_1)
                     # if cv2.waitKey(0) & 0xff == 27:
                     #     cv2.destroyAllWindows()
                     # image = cv2.addWeighted(image,0.3,cnt_map,0.7,0)
@@ -535,7 +557,7 @@ class DataGenerator:
 
                         # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
                         color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
-                        color_img = cv2.polylines(color_img, [rect1],isClosed, color,thickness)
+                        color_img_1 = cv2.polylines(color_img_1, [rect1],isClosed, color,thickness)
                         #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
                         mask_radius = np.sqrt(np.sum(np.square(bound_rect1[0]-bound_rect1[2])))/2
                         self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))            
@@ -543,12 +565,32 @@ class DataGenerator:
                         cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
                         cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
 
-                        cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=25)
+                        cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a)+25, box_color,thickness=-1)
                         # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
-                        cv2.circle(color_img, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
+                        cv2.circle(color_img_1, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
                         #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
                         self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_obs_a)) 
+                
+                
+                pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
+                # pattern_[pattern_pad:pattern_size-pattern_pad, pattern_pad:pattern_size-pattern_pad, :] = box_color
+                pattern_[:, :, :] = resized
+                # pattern_[0, 0, :] = 255
+                # pattern_[0, 1, :] = 255
+                # pattern_[1, 0, :] = 255
+                # pattern_[6, 6, :] = 255
+                # pattern_[5, 6, :] = 255
+                # pattern_[6, 5, :] = 255
+                ny = int(h / pattern_size) + 1
+                nx = int(w / pattern_size) + 1
+                pattern_ = cv2.repeat(pattern_, ny, nx)
+                pattern_ = pattern_[:h, :w, :]
+                mask_ = color_img == box_color
+                color_img[mask_] = pattern_[mask_]
+                
+                
                 break
+                
         
         images = [cnt_map, color_img]
         self.annotation_list.clear()
