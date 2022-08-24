@@ -152,3 +152,4 @@ build/
 .catkin_workspace
 .catkin_tools/
 /scratch/kanishk/annotated_map_dataset/dataset_generation/data/HouseExpo/HouseExpo
+dataset_generation/data/data/

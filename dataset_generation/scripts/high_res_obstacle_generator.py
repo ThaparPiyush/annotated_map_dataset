@@ -48,7 +48,7 @@ config = {
         "obs_num_max": 10,
         "obs_size_range": [0.02, 0.1],
         "min_dist_between_obs": 0,
-        "bounding_box_pad": 20,
+        "bounding_box_pad": 10,
 
     },
 
@@ -244,7 +244,7 @@ class DataGenerator:
                 # color = np.random.randint(0, 255, size=3)
             # color_img[component] = color
 
-            rooms_texture_path = "/home/rrc/annotated_map_dataset/src/dataset_generation/data/textures/rooms/room_texture_{}.jpg".format(color_enumerator+1)
+            rooms_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/rooms/room_texture_{}.jpg".format(color_enumerator+1)
             dim = (pattern_size,pattern_size)
             texture_img2 = cv2.imread(rooms_texture_path)
             resized = cv2.resize(texture_img2, dim, interpolation = cv2.INTER_AREA)
@@ -420,7 +420,8 @@ class DataGenerator:
                 bound_obs_b = obs_b + bounding_box_pad
 
                 # randomly select shape type of obstacle [0: rectangle; 1: ellipse; 2: circle]
-                obs_type = np.random.randint(0, 2)
+                #obs_type = np.random.randint(0, 2)
+                obs_type = 2
                 # obs_type = 0
                 if obs_type == 2:
                     obs_b = obs_a
@@ -496,7 +497,7 @@ class DataGenerator:
                     fp.close()
                 # print(self.annotation_list)   
                 
-                obstacle_texture_path = "/home/rrc/annotated_map_dataset/src/dataset_generation/data/textures/obstacle/texture_{}.jpg".format(i+1)
+                obstacle_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/obstacle/texture_{}.jpg".format(i+1)
                 dim = (pattern_size,pattern_size)
                 texture_img = cv2.imread(obstacle_texture_path)
                 resized = cv2.resize(texture_img, dim, interpolation = cv2.INTER_AREA)
@@ -538,38 +539,38 @@ class DataGenerator:
                     #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
 
                 else:
-                    if annotate_number%2 == 0:
-                        cthe = np.cos(np.pi/180* obs_theta)
-                        sthe = np.sin(np.pi/180* obs_theta)
-                        rect1 = np.array([[obs_x + (-obs_a * cthe - -obs_b * sthe), obs_y + (-obs_a * sthe + -obs_b * cthe)],
-                                            [obs_x + (-obs_a * cthe - obs_b * sthe), obs_y + (-obs_a * sthe + obs_b * cthe)],
-                                            [obs_x + (obs_a * cthe - obs_b * sthe), obs_y + (obs_a * sthe + obs_b * cthe)]],
-                                        np.int32)
-                        bound_rect1 = np.array([[obs_x + (-bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (-bound_obs_a * sthe + -bound_obs_b * cthe)],
-                                            [obs_x + (-bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (-bound_obs_a * sthe + bound_obs_b * cthe)],
-                                            [obs_x + (bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + bound_obs_b * cthe)],
-                                            [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
-                                        np.int32)
-                        #cv2.polylines(cnt_map, [bound_rect1], True, 0, 2)
-                        cv2.polylines(cnt_map, [bound_rect1], True, 0, thickness=1)
-                        cv2.fillPoly(cnt_map, [bound_rect1], (0, 0, 0))
-                        cv2.polylines(cnt_map, [rect1],isClosed, color,thickness=25)
+#                    if annotate_number%2 == 0:
+#                        cthe = np.cos(np.pi/180* obs_theta)
+#                        sthe = np.sin(np.pi/180* obs_theta)
+#                        rect1 = np.array([[obs_x + (-obs_a * cthe - -obs_b * sthe), obs_y + (-obs_a * sthe + -obs_b * cthe)],
+#                                            [obs_x + (-obs_a * cthe - obs_b * sthe), obs_y + (-obs_a * sthe + obs_b * cthe)],
+#                                            [obs_x + (obs_a * cthe - obs_b * sthe), obs_y + (obs_a * sthe + obs_b * cthe)]],
+#                                        np.int32)
+#                        bound_rect1 = np.array([[obs_x + (-bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (-bound_obs_a * sthe + -bound_obs_b * cthe)],
+#                                            [obs_x + (-bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (-bound_obs_a * sthe + bound_obs_b * cthe)],
+#                                            [obs_x + (bound_obs_a * cthe - bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + bound_obs_b * cthe)],
+#                                            [obs_x + (bound_obs_a * cthe - -bound_obs_b * sthe), obs_y + (bound_obs_a * sthe + -bound_obs_b * cthe)]],
+#                                        np.int32)
+#                        #cv2.polylines(cnt_map, [bound_rect1], True, 0, 2)
+#                        cv2.polylines(cnt_map, [bound_rect1], True, 0, thickness=1)
+#                        cv2.fillPoly(cnt_map, [bound_rect1], (0, 0, 0))
+#                        cv2.polylines(cnt_map, [rect1],isClosed, color,thickness=25)
+#
+#                        # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
+#                        color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
+#                        color_img_1 = cv2.polylines(color_img_1, [rect1],isClosed, color,thickness)
+#                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+#                        mask_radius = np.sqrt(np.sum(np.square(bound_rect1[0]-bound_rect1[2])))/2
+#                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))            
+#                    else:
+                    cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
+                    cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
 
-                        # color_img = cv2.polylines(color_img, [bound_rect1], True, 0, 2)
-                        color_img =cv2.fillPoly(color_img, [bound_rect1], box_color)
-                        color_img_1 = cv2.polylines(color_img_1, [rect1],isClosed, color,thickness)
-                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
-                        mask_radius = np.sqrt(np.sum(np.square(bound_rect1[0]-bound_rect1[2])))/2
-                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, mask_radius))            
-                    else:
-                        cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
-                        cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
-
-                        cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a)+25, box_color,thickness=-1)
-                        # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
-                        cv2.circle(color_img_1, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
-                        #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
-                        self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_obs_a)) 
+                    cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a)+25, box_color,thickness=-1)
+                    # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
+                    cv2.circle(color_img_1, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
+                    #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)
+                    self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_obs_a)) 
                 
                 
                 pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
