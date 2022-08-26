@@ -23,8 +23,8 @@ class dataset:
         self.map_binary_source = os.path.join(self.cwd, 'data/map_image/map_') 
         self.map_info_source = os.path.join(self.cwd, 'data/annotations/map_') 
         self.map_color_source = os.path.join(self.cwd, 'data/color_map_image/map_') 
-        self.map_seg_target = os.path.join(self.cwd, 'data/map_seg_mask/map_')
-        self.sentences_target = os.path.join(self.cwd, 'data/waypoints/map_') 
+        self.map_seg_target = os.path.join(self.cwd, 'data/map_seg_mask/')
+        self.sentences_target = os.path.join(self.cwd, 'data/waypoints/') 
 
         # Start doing something
         self.do_stuff()
@@ -95,7 +95,6 @@ class dataset:
             
             for sentence_index, (sentence, waypoints) in enumerate(self.sentences.items()): # Do the following with every sentence
                 start_img_x = start_img_y = goal_img_x = goal_img_y = 0
-                map_seg_mask = np.zeros_like(map_image)
                 #map_seg_mask = map_image
 
                 for waypoint_index in range(0, len(waypoints)):
@@ -122,10 +121,11 @@ class dataset:
                     #map_seg_mask = cv2.circle(map_seg_mask, (start_img_y, start_img_x), 20, (255, 255, 255), -1)
                     for location in locations_parsed:
                         if location[0] == waypoints[waypoint_index]:
+                            map_seg_mask = np.zeros_like(map_image)
                             map_seg_mask = cv2.circle(map_seg_mask, (goal_img_y, goal_img_x), math.ceil(location[-1]), (255, 255, 255), -1)
+                            cv2.imwrite((self.map_seg_target + 'm' + str(map_num) + '_s' + str(sentence_index) + '_w' + str(waypoint_index) + '.png'), map_seg_mask)
 
-                cv2.imwrite((self.map_seg_target + str(map_num) + '_' + str(sentence_index) + '.png'), map_seg_mask)
-                info_target = self.sentences_target + str(map_num) + "_" + str(sentence_index) + ".txt"
+                info_target = self.sentences_target + 'm' + str(map_num) + "_s" + str(sentence_index) + ".txt"
                 info_target = open(info_target, 'a')
                 sentence = str(sentence.split('_')[0]) + ' ' + str(sentence.split('_')[1])
                 info_target.write(str(sentence))

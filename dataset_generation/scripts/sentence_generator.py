@@ -37,19 +37,19 @@ class sentences:
         for table in range(0, self.nTables):
             self.Places.append('Table_' + str(table+1))
 
-        # for imperative in Imperatives:
-        #     for connective in Connectives:
-        #         for place1 in range(0, len(self.Places)-1):
-        #             remaining_places = self.Places[:place1] + self.Places[(place1+1):]
-        #             for place2 in range(0, len(remaining_places)-1):
-        #                 sentence = imperative + self.Places[place1] + connective + imperative + remaining_places[place2]
-        #                 waypoints = (self.Places[place1], remaining_places[place2])
-        #                 self.Sentences[sentence] = waypoints
         for imperative in Imperatives:
-           for place in self.Places:
-               sentence = imperative + place
-               waypoints = ((place),)
-               self.Sentences[sentence] = waypoints
+            for connective in Connectives:
+                for place1 in range(0, len(self.Places)-1):
+                    remaining_places = self.Places[:place1] + self.Places[(place1+1):]
+                    for place2 in range(0, len(remaining_places)-1):
+                        sentence = imperative + self.Places[place1] + connective + imperative + remaining_places[place2]
+                        waypoints = (self.Places[place1], remaining_places[place2])
+                        self.Sentences[sentence] = waypoints
+        #for imperative in Imperatives:
+        #   for place in self.Places:
+        #       sentence = imperative + place
+        #       waypoints = ((place),)
+        #       self.Sentences[sentence] = waypoints
     def returnSentences(self):
         return self.Sentences
 

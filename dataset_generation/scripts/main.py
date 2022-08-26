@@ -42,7 +42,7 @@ class dataset:
         self.map_target = os.path.join(self.paths, 'test/map.png') #r'/home/kanishk/ros_ws/wheelchair/src/dependencies/robot_navigation/dlux_plugins/test/map.png'
         # self.map_info_source = os.path.join(self.cwd, 'data/annotations/map_') # self.map_info #os.path.join(self.cwd, 'data/annotations/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/annotations/map_'
         self.map_color_source = os.path.join(self.cwd, 'data/color_map_image/map_') #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_color.png
-        self.map_color_target = os.path.join(self.cwd, 'data/waypoints/map_') #self.map_color_source #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_17.png, for sentence 17 in map 3.
+        self.map_color_target = os.path.join(self.cwd, 'data/waypoints/') #self.map_color_source #r'/home/kanishk/ros_ws/annotated_map_dataset/color_map_image/map_' # Filling it in function 'do_stuff' below. Example: map_3_17.png, for sentence 17 in map 3.
 
         # Launch file setup before starting
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
@@ -194,7 +194,7 @@ class dataset:
                     if len(self.viz_marker_data.points) != 0:
                         color_map_out = os.path.join(self.cwd, ('data/plan_seg_mask/seg_mask_' + str(map_num) + "_" + str(file_sentence_index) + '.png'))
                         cv2.imwrite(color_map_out, map_seg_mask)
-                        map_info_target = os.path.join(self.cwd, ('data/plan_waypoints/map_' + str(map_num) + "_" + str(file_sentence_index) + '.txt')) #self.map_info_source[0:-5] + str(map_num) + '_' + str(sentence_index) + '.txt'
+                        map_info_target = os.path.join(self.cwd, ('data/plan_waypoints/' + str(map_num) + "_" + str(file_sentence_index) + '.txt')) #self.map_info_source[0:-5] + str(map_num) + '_' + str(sentence_index) + '.txt'
                         map_info_file = open(map_info_target, 'a')
                         map_info_file.write(str(sentence))
                     else:
