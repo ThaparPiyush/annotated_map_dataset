@@ -153,3 +153,10 @@ build/
 .catkin_tools/
 /scratch/kanishk/annotated_map_dataset/dataset_generation/data/HouseExpo/HouseExpo
 dataset_generation/data/data/
+dataset_generation/data/color_map_image/*.png
+dataset_generation/data/waypoints/*.txt
+dataset_generation/data/map_seg_mask/*.png
+dataset_generation/data/annotations/*.txt
+dataset_generation/data/map_image/*.png
+dataset_generation/data/map_contours_info/*.npy
+dataset_generation/data/data_texture/
