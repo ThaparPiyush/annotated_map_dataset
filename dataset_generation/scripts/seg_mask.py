@@ -127,7 +127,6 @@ class dataset:
 
                 info_target = self.sentences_target + 'm' + str(map_num) + "_s" + str(sentence_index) + ".txt"
                 info_target = open(info_target, 'a')
-                sentence = str(sentence.split('_')[0]) + ' ' + str(sentence.split('_')[1])
                 info_target.write(str(sentence))
                 info_target.close()
 
