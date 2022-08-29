@@ -23,10 +23,13 @@ class sentences:
         self.nDoors = self.nRooms = self.nTables = 0
         self.object_list = ['Table', 'Sofa', 'Almirah', 'Lamp', 'Carpet', 'Fan', 'Computer', 'Tea', 'Plant', 'Telephone']
         for loc in locations:
-            if (loc[0][0:-2] == 'Room'):
-                self.nRooms +=1
-            elif (loc[0][0:-2] == 'Table'):
-                self.nTables += 1
+            if '_' not in loc[0]:
+                self.Places.append(loc[0])
+        #for loc in locations:
+        #    if (loc[0][0:-2] == 'Room'):
+        #        self.nRooms +=1
+        #    elif (loc[0][0:-2] == 'Table'):
+        #        self.nTables += 1
             # elif (loc[0][0:-2] == 'Door'):
             #     self.nDoors += 1
 
@@ -35,8 +38,8 @@ class sentences:
         #     self.Places.append('Door_' + str(door+1))
         #for room in range(0, self.nRooms):
         #    self.Places.append('Room_' + str(room+1))
-        for table in range(0, self.nTables):
-            self.Places.append(self.object_list[table+1])
+        #for table in range(0, self.nTables):
+        #    self.Places.append(self.object_list[table+1])
 
         for imperative in Imperatives:
             for connective in Connectives:

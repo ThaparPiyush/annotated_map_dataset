@@ -38,8 +38,8 @@ class dataset:
             locations_parsed.append(list(literal_eval(line)))
         object_list = ['Table', 'Sofa', 'Almirah', 'Lamp', 'Carpet', 'Fan', 'Computer', 'Tea', 'Plant', 'Telephone']
         for i in range(len(locations_parsed)):
-            locations_parsed[i][0] = object_list[int(locations_parsed[i][0].split('_')[-1])]
-        print(locations_parsed)
+            if locations_parsed[i][0].split('_')[0] == 'Table':
+                locations_parsed[i][0] = object_list[int(locations_parsed[i][0].split('_')[-1])]
         return locations_parsed
 
     def returnStartPoint(self, array): # Returns a random point (x,y) lying inside the given map
@@ -99,7 +99,7 @@ class dataset:
                 #map_seg_mask = map_image
 
                 for waypoint_index in range(0, len(waypoints)):
-                    #print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
+                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
                     if waypoint_index == 0:
                         (start_img_x, start_img_y) = self.returnStartPoint(map_image)
                         for location in locations_parsed:
