@@ -30,15 +30,16 @@ class dataset:
         self.do_stuff()
 
     def copy_map_info(self, num): # Get locations with their Y, X coordinates
-        #if(self.map_info_source[-1] == 't'):
-        #    self.map_info_source = self.map_info_source.split('')[0]
-        #    #self.map_info_source = self.map_info_source[0:-5]
         f_open = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
         file = open(f_open, "r")
         file.seek(0)
         locations_parsed = []
         for line in file:
             locations_parsed.append(list(literal_eval(line)))
+        object_list = ['Table', 'Sofa', 'Almirah', 'Lamp', 'Carpet', 'Fan', 'Computer', 'Tea', 'Plant', 'Telephone']
+        for i in range(len(locations_parsed)):
+            locations_parsed[i][0] = object_list[int(locations_parsed[i][0].split('_')[-1])]
+        print(locations_parsed)
         return locations_parsed
 
     def returnStartPoint(self, array): # Returns a random point (x,y) lying inside the given map
@@ -98,7 +99,7 @@ class dataset:
                 #map_seg_mask = map_image
 
                 for waypoint_index in range(0, len(waypoints)):
-                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
+                    #print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
                     if waypoint_index == 0:
                         (start_img_x, start_img_y) = self.returnStartPoint(map_image)
                         for location in locations_parsed:
