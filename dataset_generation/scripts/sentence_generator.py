@@ -51,7 +51,7 @@ class sentences:
         #                self.Sentences[sentence] = waypoints
         for imperative in Imperatives:
            for place in self.Places:
-               sentence = imperative + place
+               sentence = place
                waypoints = ((place),)
                self.Sentences[sentence] = waypoints
     def returnSentences(self):
