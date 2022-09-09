@@ -30,9 +30,6 @@ class dataset:
         self.do_stuff()
 
     def copy_map_info(self, num): # Get locations with their Y, X coordinates
-        #if(self.map_info_source[-1] == 't'):
-        #    self.map_info_source = self.map_info_source.split('')[0]
-        #    #self.map_info_source = self.map_info_source[0:-5]
         f_open = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
         file = open(f_open, "r")
         file.seek(0)
@@ -131,7 +128,6 @@ class dataset:
 
                 info_target = self.sentences_target + 'm' + str(map_num) + "_s" + str(sentence_index) + ".txt"
                 info_target = open(info_target, 'a')
-                print(sentence)
                 info_target.write(str(sentence))
                 info_target.close()
 
