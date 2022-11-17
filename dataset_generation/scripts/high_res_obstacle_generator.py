@@ -46,7 +46,7 @@ config = {
         "border_pad": 25,
         "obs_num_min": 5,
         "obs_num_max": 10,
-        "obs_size_range": [0.02, 0.1],
+        "obs_size_range": [0.06, 0.09],
         "min_dist_between_obs": 0,
         "bounding_box_pad": 10,
 
@@ -141,6 +141,10 @@ class DataGenerator:
 
         # Draw the contour
         verts = (np.array(json_data['verts']) * self.config.world_params.meter2pixel).astype(int)
+
+        verts[:, 0] = (verts[:, 0] - np.min(verts[:, 0]))*1600/(np.max(verts[:, 0]) - np.min(verts[:, 0]))
+        verts[:, 1] = (verts[:, 1] - np.min(verts[:, 1]))*1600/(np.max(verts[:, 1]) - np.min(verts[:, 1]))
+
         x_max, x_min, y_max, y_min = np.max(verts[:, 0]), np.min(verts[:, 0]), np.max(verts[:, 1]), np.min(verts[:, 1])
         cnt_map = np.ones((y_max - y_min + self.config.world_params.border_pad * 2,
                             x_max - x_min + self.config.world_params.border_pad * 2)) 
@@ -337,8 +341,8 @@ class DataGenerator:
         if not os.path.exists(self.color_map_img_path): os.mkdir(self.color_map_img_path)
         if not os.path.exists(self.map_contours_info_path): os.mkdir(self.map_contours_info_path)
 
-        output_file_name = 'map_{}'.format(number)
-        cv2.imwrite(self.color_map_img_path + "/" + output_file_name + '_color.png', color_img)
+        output_file_name = '{}'.format(number)
+        cv2.imwrite(self.color_map_img_path + "/" + output_file_name + '.png', color_img)
         cv2.imwrite(self.map_img_path + "/" + output_file_name + '.png', cnt_map)
         np.save(self.map_contours_info_path + '/' + output_file_name + '.npy', verts)
 
@@ -354,7 +358,7 @@ class DataGenerator:
         obs_sizeRange = self.config.world_params.obs_size_range
         # obs_sizeRange = obs_sizeRange * self.config.world_params.meter2pixel
         # obs_sizeRange = [np.round(obs_sizeRange[0]), np.round(obs_sizeRange[1])]
-        prox_min = 0 # min distance in pixel between added obstacle & obstacle in map
+        prox_min = 80 # min distance in pixel between added obstacle & obstacle in map
         
         (h,w)= cnt_map.shape
         # cnt_map = cv2.cvtColor(cnt_map.astype(np.uint8),cv2.COLOR_GRAY2RGB)
@@ -416,8 +420,6 @@ class DataGenerator:
                 obs_a = np.random.randint(obs_sizeRange[0], obs_sizeRange[1])*0.5
                 obs_b = np.random.randint(obs_sizeRange[0], obs_sizeRange[1])*0.5
                 obs_theta = np.random.random()*360
-                bound_obs_a = obs_a + bounding_box_pad
-                bound_obs_b = obs_b + bounding_box_pad
 
                 # randomly select shape type of obstacle [0: rectangle; 1: ellipse; 2: circle]
                 #obs_type = np.random.randint(0, 2)
@@ -428,6 +430,9 @@ class DataGenerator:
 
                 # randomly generate obstacle center coordinate that the obstacle would not exceed world boundary
                 bound = 0.0
+
+                bound_obs_a = obs_a + bounding_box_pad
+                bound_obs_b = obs_b + bounding_box_pad
 
                 if obs_type == 0:
                     bound = math.sqrt((obs_a * 2) ** 2 + (obs_b * 2) ** 2) + prox_min
@@ -445,7 +450,7 @@ class DataGenerator:
 
                 obs_y = np.random.randint(bound, h-bound)
                 obs_x = np.random.randint(bound, w-bound)
-                # check if the location of obstacle to be added intersect with other obstacle present
+                # check if the location of obstacle to be added intersect with wall or other obstacle present
                 if np.sum(cnt_map[obs_y-bound:obs_y+bound, obs_x-bound:obs_x+bound]==0)!= 0:
                     count_ += 1
                     if count_ >= 1000:
@@ -566,7 +571,7 @@ class DataGenerator:
                     cv2.circle(cnt_map, (obs_x,obs_y), int(bound_obs_a), 0,thickness=-1)
                     cv2.circle(cnt_map, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
 
-                    cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a)+25, box_color,thickness=-1)
+                    cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), box_color,thickness=-1)
                     # cv2.circle(color_img, (obs_x,obs_y), int(bound_obs_a), 0,thickness=1)
                     cv2.circle(color_img_1, (obs_x,obs_y), int(obs_a), 0,thickness=-1)
                     #text = cv2.putText(cnt_map, annotate, org, font,fontScale, color, text_thickness, cv2.LINE_AA)

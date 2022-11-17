@@ -20,9 +20,8 @@ class dataset:
         self.sentences = {} 
         self.cwd = abspath(getsourcefile(lambda:0))
         self.cwd = self.cwd[0:-20]
-        self.map_binary_source = os.path.join(self.cwd, 'data/map_image/map_') 
+        self.map_binary_source = os.path.join(self.cwd, 'data/map_image/') 
         self.map_info_source = os.path.join(self.cwd, 'data/annotations/map_') 
-        self.map_color_source = os.path.join(self.cwd, 'data/color_map_image/map_') 
         self.map_seg_target = os.path.join(self.cwd, 'data/map_seg_mask/')
         self.sentences_target = os.path.join(self.cwd, 'data/waypoints/') 
 
@@ -88,7 +87,8 @@ class dataset:
         return (x, y)
 
     def do_stuff(self):
-        for map_num in range (1,51): # Do the following with every map
+        num_maps = len(os.listdir(self.map_binary_source))
+        for map_num in range (1,num_maps): # Do the following with every map
             locations_parsed = self.copy_map_info(map_num)
             sentencesObject = sentence_generator.sentences(locations_parsed)
             self.sentences = sentencesObject.returnSentences()

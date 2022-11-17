@@ -1,50 +1,23 @@
-import os
-import os.path
-import shutil
-import pdb
+import os, shutil
 
 data_path = '/scratch/wheelchair/annotated_map_dataset/dataset_generation/data'
-
-directories = ['train', 'val']
-split_ratio = [0.75, 0.25]   # train, val, test
+split_folders = ['train', 'val']
 data_folders = ['color_map_image', 'map_seg_mask', 'waypoints']
-prev_count = 0
-count = 0 
-def return_int(string):
-    emp_str = ""
-    for m in string:
-        if m.isdigit():
-            emp_str = emp_str + m
-    return emp_str
-for i in range(len(directories)):
-    path = ''
-    count = count + split_ratio[i] * len(os.listdir(data_path+'/color_map_image'))
-    for j in range(len(data_folders)):
-        # create the train/test/val directory
-        path = os.path.join(data_path,'data_texture')
-        if not os.path.exists(path):
-            os.mkdir(path)
-        path = os.path.join(data_path,'data_texture', directories[i])
-        if not os.path.exists(path):
-            os.mkdir(path)
+split_ratio = 0.75
 
-        pdb.set_trace()
-        # create the color_map etc directory
-        target_path = os.path.join(data_path, data_folders[j])
-        targetf = [name for name in os.listdir(target_path) if os.path.isfile(os.path.join(target_path, name))]
-        # color_len = len(targetf)
-        targetf = sorted(targetf)
+seg_orig = os.listdir(os.path.join(data_path, 'map_seg_mask'))
+col_orig = os.listdir(os.path.join(data_path, 'color_map_image'))
+way_orig = os.listdir(os.path.join(data_path, 'waypoints'))
 
-        path = os.path.join(path, data_folders[j])
-        if not os.path.exists(path):
-            os.mkdir(path)
-        # count = split_ratio[i] * len(targetf)
+for col_map_i in range(len(col_orig)):
+	for seg_map in seg_orig:
+		if col_orig[col_map_i].split('.')[0] == seg_map.split('_')[0][1:]:
+			if col_map_i <= int(len(col_orig))*split_ratio:
+				shutil.copy(os.path.join(data_path, 'color_map_image', col_orig[col_map_i]), os.path.join(data_path, 'data_texture', split_folders[0], 'color_map_image', col_orig[col_map_i]))
+				shutil.copy(os.path.join(data_path, 'map_seg_mask', seg_map), os.path.join(data_path, 'data_texture', split_folders[0], 'map_seg_mask', seg_map))
+				shutil.copy(os.path.join(data_path, 'waypoints', str(seg_map.split('w')[0][0:-1]) + str('.txt')), os.path.join(data_path, 'data_texture', split_folders[0], 'waypoints', str(seg_map.split('w')[0][0:-1]) + str('.txt')))
+			else:
+				shutil.copy(os.path.join(data_path, 'color_map_image', col_orig[col_map_i]), os.path.join(data_path, 'data_texture', split_folders[1], 'color_map_image', col_orig[col_map_i]))
+				shutil.copy(os.path.join(data_path, 'map_seg_mask', seg_map), os.path.join(data_path, 'data_texture', split_folders[1], 'map_seg_mask', seg_map))
+				shutil.copy(os.path.join(data_path, 'waypoints', str(seg_map.split('w')[0][0:-1]) + str('.txt')), os.path.join(data_path, 'data_texture', split_folders[1], 'waypoints', str(seg_map.split('w')[0][0:-1]) + str('.txt')))
 
-        # copy files
-        for f in targetf:
-            print(f.split('_'))
-            if int(return_int(f.split('_')[1])) <= count and int(return_int(f.split('_')[1])) > prev_count:
-                shutil.copy2(os.path.join(target_path, f), path)
-
-    print("Directory '% s' created" % directories[i])
-    prev_count = count
