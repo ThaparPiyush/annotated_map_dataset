@@ -124,7 +124,7 @@ class DataGenerator:
         # self.load_map_file()
         number =1
         for map_id in self.map_ids:
-            self.draw_map(map_id, number)
+            copious_maps = self.draw_map(map_id, number)
             number = number+1
             # break
             
@@ -134,7 +134,7 @@ class DataGenerator:
 
 
     def draw_map(self, file_name, number):
-        print(f"Processing {number}: {file_name}          ", end='\r')
+        print(f"Processing {number}: {file_name}          ")
 
         with open(self.json_path + '/' + file_name + '.json') as json_file:
             json_data = json.load(json_file)
@@ -264,6 +264,10 @@ class DataGenerator:
         # print('LENGTH1: ' ,door_stats)
         # print(door_center)
         # print('LENGTH2: ' ,len(door_center))
+
+        if len(rooms) > 10:
+            return
+
         for center1 in door_center:
             i = 0
             for center2 in door_center:
