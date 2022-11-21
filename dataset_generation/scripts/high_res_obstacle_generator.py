@@ -125,7 +125,8 @@ class DataGenerator:
         number =1
         for map_id in self.map_ids:
             copious_maps = self.draw_map(map_id, number)
-            number = number+1
+            if not copious_maps == 1:
+                number = number+1
             # break
             
         # while True:
@@ -265,8 +266,10 @@ class DataGenerator:
         # print(door_center)
         # print('LENGTH2: ' ,len(door_center))
 
-        if len(rooms) > 10:
-            return
+        print(f"Rooms in map: {len(rooms)}")
+        if len(rooms) > 50:
+            print("Skipping this map")
+            return 1
 
         for center1 in door_center:
             i = 0
