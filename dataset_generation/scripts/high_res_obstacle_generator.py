@@ -250,17 +250,17 @@ class DataGenerator:
             # color_img[component] = color
 
             rooms_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/rooms/room_texture_{}.jpg".format(color_enumerator+1)
-            dim = (pattern_size,pattern_size)
+            #dim = (pattern_size,pattern_size)
             #texture_img2 = cv2.imread(rooms_texture_path)
             texture_img2 = np.asarray(Image.open(rooms_texture_path))
-            resized = cv2.resize(texture_img2, dim, interpolation = cv2.INTER_AREA)
+            #resized = cv2.resize(texture_img2, dim, interpolation = cv2.INTER_AREA)
 
-            pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
+            pattern_ = np.zeros((texture_img2.shape[0], texture_img2.shape[1], 3), dtype=np.uint8)
             # pattern_[pattern_pad:pattern_size-pattern_pad, pattern_pad:pattern_size-pattern_pad, :] = resized
-            pattern_[:, :, :] = resized
-            ny = int(h / pattern_size) + 1
-            nx = int(w / pattern_size) + 1
-            pattern_ = cv2.repeat(pattern_, ny, nx)
+            pattern_[:, :, :] = texture_img2
+            #ny = int(h / texture_img2.shape[0]) + 1
+            #nx = int(w / texture_img2.shape[1]) + 1
+            #pattern_ = cv2.repeat(pattern_, ny, nx)
             pattern_ = pattern_[:h, :w, :]
             color_img[component] = pattern_[component]
         # print('LENGTH1: ' ,door_stats)
@@ -509,10 +509,10 @@ class DataGenerator:
                 # print(self.annotation_list)   
                 
                 obstacle_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/obstacle/texture_{}.jpg".format(i+1)
-                dim = (pattern_size,pattern_size)
+                #dim = (pattern_size,pattern_size)
                 #texture_img = cv2.imread(obstacle_texture_path)
                 texture_img = np.asarray(Image.open(obstacle_texture_path))
-                resized = cv2.resize(texture_img, dim, interpolation = cv2.INTER_AREA)
+                #resized = cv2.resize(texture_img, dim, interpolation = cv2.INTER_AREA)
 
                 box_color =(self.dark_colors[i][1],self.dark_colors[i][2],self.dark_colors[i][3])
                 thickness = 8
@@ -585,18 +585,18 @@ class DataGenerator:
                     self.annotation_list.append(('Table_%d' %(annotate_number), obs_x/100, obs_y/100, bound_obs_a)) 
                 
                 
-                pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
+                pattern_ = np.zeros((texture_img.shape[0], texture_img.shape[1], 3), dtype=np.uint8)
                 # pattern_[pattern_pad:pattern_size-pattern_pad, pattern_pad:pattern_size-pattern_pad, :] = box_color
-                pattern_[:, :, :] = resized
+                pattern_[:, :, :] = texture_img
                 # pattern_[0, 0, :] = 255
                 # pattern_[0, 1, :] = 255
                 # pattern_[1, 0, :] = 255
                 # pattern_[6, 6, :] = 255
                 # pattern_[5, 6, :] = 255
                 # pattern_[6, 5, :] = 255
-                ny = int(h / pattern_size) + 1
-                nx = int(w / pattern_size) + 1
-                pattern_ = cv2.repeat(pattern_, ny, nx)
+                #ny = int(h / texture_img.shape[0]) + 1
+                #nx = int(w / texture_img.shape[1]) + 1
+                #pattern_ = cv2.repeat(pattern_, ny, nx)
                 pattern_ = pattern_[:h, :w, :]
                 mask_ = color_img == box_color
                 color_img[mask_] = pattern_[mask_]
