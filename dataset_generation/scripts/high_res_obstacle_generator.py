@@ -3,6 +3,7 @@
 # Python3 program to draw circle
 # shape on solid image
 import numpy as np
+from PIL import Image
 import cv2
 import math
 import json
@@ -22,7 +23,6 @@ from os.path import abspath
 cwd = os.getcwd()
 cwd = abspath(getsourcefile(lambda:0))
 cwd = cwd[0:-39]
-print(cwd)
 
 pattern_size = 30
 pattern_pad = 1
@@ -231,7 +231,7 @@ class DataGenerator:
                     # print('ROOM_AREA:',area)
                     rooms.append(component)                    
                     room_center.append(centroids[label])
-                    color =(self.light_colors[color_enumerator][1],self.light_colors[color_enumerator][2],self.light_colors[color_enumerator][3])
+                    #color =(self.light_colors[color_enumerator][1],self.light_colors[color_enumerator][2],self.light_colors[color_enumerator][3])
                     color_enumerator = color_enumerator +1
                 elif area < 300:
                     # print('DOOR_AREA:',area)
@@ -251,7 +251,8 @@ class DataGenerator:
 
             rooms_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/rooms/room_texture_{}.jpg".format(color_enumerator+1)
             dim = (pattern_size,pattern_size)
-            texture_img2 = cv2.imread(rooms_texture_path)
+            #texture_img2 = cv2.imread(rooms_texture_path)
+            texture_img2 = np.asarray(Image.open(rooms_texture_path))
             resized = cv2.resize(texture_img2, dim, interpolation = cv2.INTER_AREA)
 
             pattern_ = np.zeros((pattern_size, pattern_size, 3), dtype=np.uint8)
@@ -266,9 +267,7 @@ class DataGenerator:
         # print(door_center)
         # print('LENGTH2: ' ,len(door_center))
 
-        print(f"Rooms in map: {len(rooms)}")
         if len(rooms) > 50:
-            print("Skipping this map")
             return 1
 
         for center1 in door_center:
@@ -511,7 +510,8 @@ class DataGenerator:
                 
                 obstacle_texture_path = "/scratch/wheelchair/annotated_map_dataset/dataset_generation/data/textures/obstacle/texture_{}.jpg".format(i+1)
                 dim = (pattern_size,pattern_size)
-                texture_img = cv2.imread(obstacle_texture_path)
+                #texture_img = cv2.imread(obstacle_texture_path)
+                texture_img = np.asarray(Image.open(obstacle_texture_path))
                 resized = cv2.resize(texture_img, dim, interpolation = cv2.INTER_AREA)
 
                 box_color =(self.dark_colors[i][1],self.dark_colors[i][2],self.dark_colors[i][3])
