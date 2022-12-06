@@ -30,7 +30,10 @@ class dataset:
 
     def copy_map_info(self, num): # Get locations with their Y, X coordinates
         f_open = self.map_info_source + str(num) + '.txt' # For example, map_3.txt
-        file = open(f_open, "r")
+        try:
+            file = open(f_open, "r")
+        except:
+            return 1
         file.seek(0)
         locations_parsed = []
         for line in file:
@@ -90,6 +93,8 @@ class dataset:
         num_maps = len(os.listdir(self.map_binary_source))
         for map_num in range (1,num_maps): # Do the following with every map
             locations_parsed = self.copy_map_info(map_num)
+            if locations_parsed == 1:
+                continue
             sentencesObject = sentence_generator.sentences(locations_parsed)
             self.sentences = sentencesObject.returnSentences()
             map_image = cv2.imread(self.map_binary_source + str(map_num) + '.png')
@@ -99,7 +104,7 @@ class dataset:
                 #map_seg_mask = map_image
 
                 for waypoint_index in range(0, len(waypoints)):
-                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index, "      ", end='\r')
+                    print("Map number: ", map_num, " Sentence number: ", sentence_index, "Waypoint number: ", waypoint_index)
                     if waypoint_index == 0:
                         (start_img_x, start_img_y) = self.returnStartPoint(map_image)
                         for location in locations_parsed:
